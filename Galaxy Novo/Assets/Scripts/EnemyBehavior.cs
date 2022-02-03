@@ -35,7 +35,7 @@ public class EnemyBehavior : MonoBehaviour
             Damage();
             Destroy(other.gameObject);
         }
-        else if (other.tag == "TripleShot")
+        else if (other.tag == "HeavyShot")
         {
             Destroy(other.gameObject);
             Destroy(this.gameObject);

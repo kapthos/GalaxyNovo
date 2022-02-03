@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 5857104936417475675}
   - component: {fileID: 2280449461531594433}
   m_Layer: 0
-  m_Name: TripleShot
-  m_TagString: TripleShot
+  m_Name: Heavy
+  m_TagString: HeavyShot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

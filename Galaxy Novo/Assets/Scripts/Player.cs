@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float _movementSpeed;
-    [SerializeField] private int _lives;
-    [SerializeField] private float _singleShotCD;
-    [SerializeField] private float _tripleShotCD;
-    private float _nextFire;
-    private bool _canSingleShot = true;
-    [SerializeField] private bool _canTripleShot;
     private float _horizontalInput;
     private float _verticalInput;
 
-    [SerializeField] private GameObject _laser;
-    [SerializeField] private GameObject _tripleShot;
+    [SerializeField] private float _movementSpeed;
+    [SerializeField] private int _lives;
+
+    [SerializeField] private int _speedLives;
+
+    [SerializeField] private bool _shieldOn;
+    [SerializeField] private float _shieldDuration;
 
     void Start()
     {
@@ -25,8 +23,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         Movement();
-        Shooting();
-        TripleShot();
+        SpeedBoostOn();
     }
 
     public void Movement()
@@ -45,9 +42,9 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(8.4f, transform.position.y, 0);
         }
-        if (transform.position.y >= 1)
+        if (transform.position.y >= 3)
         {
-            transform.position = new Vector3(transform.position.x, 1, 0);
+            transform.position = new Vector3(transform.position.x, 3, 0);
         }
         else if (transform.position.y <= -4.5f)
         {
@@ -55,22 +52,12 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void Shooting()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time >= _nextFire && _canSingleShot)
-        {
-            Instantiate(_laser, transform.position + new Vector3(0, 1, 0), Quaternion.identity);
-            _nextFire = Time.time + _singleShotCD;
-        }
-        if (_canTripleShot == true)
-        {
-            _canSingleShot = false;
-        }
-    }
-
     public void Damage()
     {
-        _lives--;
+        if (_shieldOn == false)
+        {
+            _lives--;
+        }
 
         if(_lives < 1)
         {
@@ -78,25 +65,36 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void TripleShot()
+    public void SpeedLivesAdded()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && _canTripleShot == true && Time.time >= _nextFire)
+        _speedLives++;
+    }
+
+    public void SpeedBoostOn()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift) && _speedLives > 0)
         {
-            Instantiate(_tripleShot, transform.position + new Vector3(0,1,0), Quaternion.identity);
-            _nextFire = Time.time + _tripleShotCD;
+            _movementSpeed = _movementSpeed + 3.5f;
+            _speedLives--;
+            StartCoroutine(SpeedPowerDownRoutine());
         }
     }
 
-    public void TSPowerUpOn()
-    {
-        _canTripleShot = true;
-        StartCoroutine(TSPowerDownRoutine());
-    }
-    IEnumerator TSPowerDownRoutine()
+    IEnumerator SpeedPowerDownRoutine()
     {
         yield return new WaitForSeconds(5);
-        _canTripleShot = false;
-        _canSingleShot = true;
+        _movementSpeed = _movementSpeed - 3.5f;
     }
 
+    public void ShieldOn()
+    {
+        _shieldOn = true;
+        StartCoroutine(ShieldPowerDownRoutine());
+    }
+
+    IEnumerator ShieldPowerDownRoutine()
+    {
+        yield return new WaitForSeconds(_shieldDuration);
+        _shieldOn = false;
+    }
 }
