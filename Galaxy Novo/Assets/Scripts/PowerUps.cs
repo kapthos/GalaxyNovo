@@ -29,9 +29,9 @@ public class PowerUps : MonoBehaviour
             Player pl = other.GetComponent<Player>();
             PlayerShots ps = other.GetComponent<PlayerShots>();
 
-            if(_powerUpType == 0)
+            if (_powerUpType == 0)
             {
-                ps._canHeavyShot = true;
+                ps.canHeavyShot = true;
 
                 if (ps != null)
                 {

@@ -8,22 +8,30 @@ public class Player : MonoBehaviour
     private float _verticalInput;
 
     [SerializeField] private float _movementSpeed;
-    [SerializeField] private int _lives;
+    [SerializeField] public int _lives;
 
     [SerializeField] private int _speedLives;
 
-    [SerializeField] private bool _shieldOn;
+    public bool _shieldOn;
     [SerializeField] private float _shieldDuration;
+    [SerializeField] public int _score = 0;
+
+    [SerializeField] private GameObject shields;
+    private UIManager _uiManager;
+    private GameManager _gm;
 
     void Start()
     {
-        transform.position = new Vector3(0, -2, 0);
+        _uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
+        _gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+        
     }
 
     void Update()
     {
         Movement();
         SpeedBoostOn();
+        PlayerDeath();
     }
 
     public void Movement()
@@ -54,15 +62,15 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        if (_shieldOn == false)
+        if (_shieldOn == true)
         {
-            _lives--;
+            _shieldOn = false;
+            shields.SetActive(false);
+            return;
         }
 
-        if(_lives < 1)
-        {
-            Destroy(this.gameObject);
-        }
+        _lives--;
+        _uiManager.UpdateLives(_lives);
     }
 
     public void SpeedLivesAdded()
@@ -89,12 +97,30 @@ public class Player : MonoBehaviour
     public void ShieldOn()
     {
         _shieldOn = true;
+        shields.SetActive(true);
         StartCoroutine(ShieldPowerDownRoutine());
     }
 
     IEnumerator ShieldPowerDownRoutine()
     {
         yield return new WaitForSeconds(_shieldDuration);
+        shields.SetActive(false);
         _shieldOn = false;
     }
+
+    public void PlayerDeath()
+    {
+        if (_lives < 1)
+        {
+            _gm.GameOver();
+            Destroy(this.gameObject);
+        }
+    }
+
+    public void AddPoints(int points)
+    {
+        _score += points;
+        _uiManager.UpdateScore(_score);
+    }
+
 }

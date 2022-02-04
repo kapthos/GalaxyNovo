@@ -10,12 +10,16 @@ public class PlayerShots : MonoBehaviour
     [SerializeField] private float _heavyShotCD;
     [SerializeField] private float _multiShotCD;
 
-    public bool _canSingleShot = true;
-    public bool _canHeavyShot = false;
+    public bool canSingleShot = true;
+    public bool canHeavyShot = false;
 
-    public bool _doubleFire;
-    public bool _tripleFire;
-    public bool _quadFire;
+    public bool canDoubleShot;
+    public bool canTripleShot;
+    public bool canQuadShot;
+
+    public bool multiShotON;
+
+    private int numShotType;
 
     // References
     [SerializeField] private GameObject _laser;
@@ -23,27 +27,17 @@ public class PlayerShots : MonoBehaviour
 
     void Update()
     {
-        Shooting();
         HeavyShot();
-
-        DoubleFireOn();
-        TripleFireOn();
-        QuadFireOn();
-
-        StartCoroutine(Shooting());
-        StartCoroutine(DoubleFireOn());
-        StartCoroutine(TripleFireOn());
-        StartCoroutine(QuadFireOn());
+        StartCoroutine(SingleShot());
+        StartCoroutine(MultiFire());
     }
-
     public void SpawnShot()
     {
         Instantiate(_laser, transform.position, transform.rotation);
     }
-
-    IEnumerator Shooting()
+    IEnumerator SingleShot()
     {
-        if (_canSingleShot == true)
+        if (canSingleShot == true)
         {
             if (Input.GetButtonDown("Fire1") && Time.time >= _nextFire)
             {
@@ -56,84 +50,34 @@ public class PlayerShots : MonoBehaviour
             }
         }
     }
-
-    IEnumerator DoubleFireOn()
+    public IEnumerator MultiFire()
     {
-        if (_doubleFire == true)
+        if (multiShotON == true)
         {
-            _canSingleShot = false;
+            ShotType();
             if (Input.GetButtonDown("Fire1") && Time.time >= _nextFire)
             {
-                for (int i = 0; i < 2; i++)
+                canSingleShot = false;
+                for (int i = 0; i < numShotType; i++)
                 {
                     SpawnShot();
                     yield return new WaitForSeconds(0.15f);
                     _nextFire = Time.time + _multiShotCD;
                 }
-                StartCoroutine(DoubleFireOff());
             }
+            yield return new WaitForSeconds(5);
+            multiShotON = false;
+            canDoubleShot = false;
+            canTripleShot = false;
+            canQuadShot = false;
+            canSingleShot = true;
         }
     }
-    IEnumerator TripleFireOn()
-    {
-        if (_tripleFire == true)
-        {
-            _canSingleShot = false;
-            if (Input.GetButtonDown("Fire1") && Time.time >= _nextFire)
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    SpawnShot();
-                    yield return new WaitForSeconds(0.15f);
-                    _nextFire = Time.time + _multiShotCD;
-                }
-                StartCoroutine(TripleFireOff());
-            }
-        }
-    }
-    IEnumerator QuadFireOn()
-    {
-        if (_quadFire == true)
-        {
-            _canSingleShot = false;
-            if (Input.GetButtonDown("Fire1") && Time.time >= _nextFire)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    SpawnShot();
-                    yield return new WaitForSeconds(0.15f);
-                    _nextFire = Time.time + _multiShotCD;
-                }
-                StartCoroutine(QuadFireOff());
-            }
-        }
-    }
-
-    IEnumerator DoubleFireOff()
-    {
-        yield return new WaitForSeconds(5);
-        _doubleFire = false;
-        _canSingleShot = true;
-    }
-    IEnumerator TripleFireOff()
-    {
-        yield return new WaitForSeconds(5);
-        _tripleFire = false;
-        _canSingleShot = true;
-    }
-    IEnumerator QuadFireOff()
-    {
-        yield return new WaitForSeconds(5);
-        _quadFire = false;
-        _canSingleShot = true;
-    }
-
-
     public void HeavyShot()
     {
-        if (_canHeavyShot == true)
+        if (canHeavyShot == true)
         {
-            _canSingleShot = false;
+            canSingleShot = false;
             if (Input.GetButtonDown("Fire1") && Time.time >= _nextFire)
             {
                 Instantiate(_heavy, transform.position + new Vector3(0, 1, 0), Quaternion.identity);
@@ -145,7 +89,22 @@ public class PlayerShots : MonoBehaviour
     IEnumerator HeavyShotDownRoutine()
     {
         yield return new WaitForSeconds(5);
-        _canHeavyShot = false;
-        _canSingleShot = true;
+        canHeavyShot = false;
+        canSingleShot = true;
+    }
+    public void ShotType()
+    {
+        if(canDoubleShot == true)
+        {
+            numShotType = 2;
+        }
+        else if (canTripleShot == true)
+        {
+            numShotType = 3;
+        }
+        else if (canQuadShot == true)
+        {
+            numShotType = 4;
+        }
     }
 }
