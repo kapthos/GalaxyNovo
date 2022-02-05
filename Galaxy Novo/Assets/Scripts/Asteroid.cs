@@ -9,11 +9,13 @@ public class Asteroid : MonoBehaviour
     [SerializeField] private GameObject _explosion;
     Animator _animExplosion;
     GameManager _gm;
+    SpawnManager _sm;
 
     public void Start()
     {
         _animExplosion = gameObject.GetComponent<Animator>();
         _gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+        _sm = GameObject.Find("SpawManager").GetComponent<SpawnManager>();
     }
 
     void Update()
@@ -36,7 +38,7 @@ public class Asteroid : MonoBehaviour
             Destroy(other.gameObject);
 
             if (_lives < 1)
-            {
+            {            
                 Instantiate(_explosion, transform.position, Quaternion.identity);
                 Destroy(this.gameObject, 0.3f);
             }

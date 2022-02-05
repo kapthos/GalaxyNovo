@@ -145,9 +145,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 896a7cf6a261a8e48a6ab40cfedb0e5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 2
+  _speed: 1.8
   _lives: 3
   points: 0
+  _coin: {fileID: 417322503552942637, guid: 2e478a3fc23e83249b4f01d78164ff84, type: 3}
 --- !u!95 &891811819051524542
 Animator:
   serializedVersion: 3

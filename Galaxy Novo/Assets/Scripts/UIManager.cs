@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     [SerializeField] private Text scoreTxt;
+    [SerializeField] private Text _goldTxt;
+    [SerializeField] private Text _turboTxt;
     [SerializeField] Sprite[] _livesSprite;
     [SerializeField] Image _LivesImg;
     [SerializeField] Text _GameOverTxt;
@@ -47,5 +49,14 @@ public class UIManager : MonoBehaviour
     public void UpdateScore(int pScore)
     {
         scoreTxt.text = "Score: " + pScore;
+    }
+    public void UpdateGold(int pGold)
+    {
+        _goldTxt.text = "Gold: " + pGold;
+    }
+
+    public void UpdateTurbo(int pTurbo)
+    {
+        _turboTxt.text = "Turbo: " + pTurbo;
     }
 }

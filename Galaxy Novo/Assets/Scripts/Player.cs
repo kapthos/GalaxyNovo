@@ -8,13 +8,14 @@ public class Player : MonoBehaviour
     private float _verticalInput;
 
     [SerializeField] private float _movementSpeed;
-    [SerializeField] public int _lives;
+    public int _lives;
 
     [SerializeField] private int _speedLives;
+    [SerializeField] private int _gold = 0;
 
     public bool _shieldOn;
     [SerializeField] private float _shieldDuration;
-    [SerializeField] public int _score = 0;
+    public int _score = 0;
 
     [SerializeField] private GameObject shields;
     private UIManager _uiManager;
@@ -23,8 +24,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         _uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
-        _gm = GameObject.Find("GameManager").GetComponent<GameManager>();
-        
+        _gm = GameObject.Find("GameManager").GetComponent<GameManager>();    
     }
 
     void Update()
@@ -42,21 +42,21 @@ public class Player : MonoBehaviour
         transform.Translate(Vector3.right * _horizontalInput * _movementSpeed * Time.deltaTime);
         transform.Translate(Vector3.up * _verticalInput * _movementSpeed * Time.deltaTime);
 
-        if (transform.position.x <= -8.4f)
+        if (transform.position.x <= -10.2f)
         {
-            transform.position = new Vector3(-8.4f, transform.position.y, 0);
+            transform.position = new Vector3(-10.2f, transform.position.y, 0);
         }
-        else if (transform.position.x >= 8.4f)
+        else if (transform.position.x >= 10.2f)
         {
-            transform.position = new Vector3(8.4f, transform.position.y, 0);
+            transform.position = new Vector3(10.2f, transform.position.y, 0);
         }
-        if (transform.position.y >= 3)
+        if (transform.position.y >= 3.5f)
         {
-            transform.position = new Vector3(transform.position.x, 3, 0);
+            transform.position = new Vector3(transform.position.x, 3.5f, 0);
         }
-        else if (transform.position.y <= -4.5f)
+        else if (transform.position.y <= -5.4f)
         {
-            transform.position = new Vector3(transform.position.x, -4.5f, 0);
+            transform.position = new Vector3(transform.position.x, -5.4f, 0);
         }
     }
 
@@ -75,15 +75,20 @@ public class Player : MonoBehaviour
 
     public void SpeedLivesAdded()
     {
-        _speedLives++;
+        if(_speedLives < 3)
+        {
+            _speedLives++;
+        }
+        _uiManager.UpdateTurbo(_speedLives);
     }
 
     public void SpeedBoostOn()
     {
         if (Input.GetKeyDown(KeyCode.LeftShift) && _speedLives > 0)
         {
-            _movementSpeed = _movementSpeed + 3.5f;
+            _movementSpeed = _movementSpeed + 2.0f;
             _speedLives--;
+            _uiManager.UpdateTurbo(_speedLives);
             StartCoroutine(SpeedPowerDownRoutine());
         }
     }
@@ -121,6 +126,12 @@ public class Player : MonoBehaviour
     {
         _score += points;
         _uiManager.UpdateScore(_score);
+    }
+
+    public void AddGold(int receivedGold)
+    {
+        _gold += receivedGold;
+        _uiManager.UpdateGold(_gold);
     }
 
 }

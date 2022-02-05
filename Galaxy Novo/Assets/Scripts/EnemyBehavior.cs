@@ -10,6 +10,7 @@ public class EnemyBehavior : MonoBehaviour
 
     Player pl;
     Animator _animExplosion;
+    [SerializeField] GameObject _coin;
 
     void Start()
     {
@@ -21,7 +22,6 @@ public class EnemyBehavior : MonoBehaviour
     {
         Movement();
     }
-
     public void Movement()
     {
         transform.Translate(Vector3.down * _speed * Time.deltaTime);
@@ -32,7 +32,6 @@ public class EnemyBehavior : MonoBehaviour
             transform.position = new Vector3(xRand, 7, 0);
         }
     }
-
     public void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Player")
@@ -51,24 +50,34 @@ public class EnemyBehavior : MonoBehaviour
         }
         else if (other.tag == "HeavyShot")
         {
+            _lives = _lives - 3;
             Destroy(other.gameObject);
             Death();
         }
     }
-
     public void Damage()
     {
         _lives--;
     }
-
     public void Death()
     {
         if (_lives < 1)
         {
             pl.AddPoints(10);
+            gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            gameObject.GetComponent<BoxCollider2D>().isTrigger = false;
+            DropGoldChance();
             _speed = 0;
             _animExplosion.SetTrigger("OnEnemyDeath");         
             Destroy(this.gameObject, 1.7f);
+        }
+    }
+    public void DropGoldChance()
+    {
+        int chance = Random.Range(0, 10);
+        if(chance > 7)
+        {
+            Instantiate(_coin, transform.position, Quaternion.identity);
         }
     }
 }
