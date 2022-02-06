@@ -21,12 +21,18 @@ public class PlayerShots : MonoBehaviour
 
     private float _timeOnPressed;
     private float _timeOnReleased;
-    private bool _heavyShotON;
+    public bool _heavyShotON;
     [SerializeField] private int _heavyShotsCount = 0;
 
     // References
     [SerializeField] private GameObject _laser;
     [SerializeField] private GameObject _heavy;
+    private UIManager _ui;
+
+    public void Start()
+    {
+        _ui = GameObject.Find("UIManager").GetComponent<UIManager>();
+    }
 
     void Update()
     {
@@ -125,7 +131,6 @@ public class PlayerShots : MonoBehaviour
             {
                 _heavyShotON = true;
             }
-            Debug.Log(_timeOnReleased);
         }
     }
 }
