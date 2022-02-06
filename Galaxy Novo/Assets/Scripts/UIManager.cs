@@ -19,11 +19,8 @@ public class UIManager : MonoBehaviour
     private float currentHeavyHold;
     private float _totalTimePressed;
 
-    private float _maxTurbo = 1.0f;
     public float _currentTurbo;
     public float _timeHolding;
-
-    public bool teste;
 
     //References
     private GameManager gm;
@@ -44,7 +41,6 @@ public class UIManager : MonoBehaviour
         currentHeavyHold = 0;
         heavyShotBar.maxValue = maxHeavyHold;
         heavyShotBar.value = 0;
-        _turboBar.value = 0;
     }
 
     // Update is called once per frame
@@ -52,8 +48,8 @@ public class UIManager : MonoBehaviour
     {
         GameOverImg();
         HeavyShotBarCharge();
+        TurboBarCharge();
     }
-
     public void UpdateLives(int currentLives)
     {
         _LivesImg.sprite = _livesSprite[currentLives];
@@ -99,26 +95,24 @@ public class UIManager : MonoBehaviour
     }
     public void TurboBarCharge()
     {
-        if(pl._speedLives == 0)
+        if(pl.canTurbo == true)
         {
-            _turboBar.value = 0;
-        }
-        if(pl._speedLives > 0)
-        {
-            _turboBar.value = _maxTurbo;
-            _currentTurbo = _maxTurbo;
-
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                _timeHolding += Time.deltaTime;
-                _turboBar.value = _maxTurbo - _timeHolding;
+                _timeHolding += Time.deltaTime * 10;
+                _turboBar.value = _turboBar.maxValue - _timeHolding;
                 _currentTurbo = _turboBar.value;
-                Debug.Log(_currentTurbo);
             }
             if (Input.GetKeyUp(KeyCode.LeftShift))
             {
-                _timeHolding = 0;
+                if(_currentTurbo <= 0)
+                {
+                    _timeHolding = 0;
+                    _turboBar.value = _turboBar.maxValue;
+                }
             }
         }
+        _timeHolding = 0;
+        _turboBar.value = 0;
     }
 }

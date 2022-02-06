@@ -11,18 +11,13 @@ public class Player : MonoBehaviour
 
     public int _lives;
 
-    public int _speedLives;
-    public bool canTurbo;
-    public bool turboON;
-
     [SerializeField] private float _currentTurbo;
-    private float _maxTurbo = 1;
-    private float _timeHolding;
-
-
-    private float _defaultSpeed = 5;
     [SerializeField] private float _currentSpeed;
-    private float _turboSpeed = 7;
+    public bool canTurbo;
+    public int _speedLives;
+    private float _shiftHolding;
+    private float _defaultSpeed = 5;
+    private float _turboSpeed = 7.5f;
 
     public bool _shieldOn;
     [SerializeField] private float _shieldDuration;
@@ -38,15 +33,16 @@ public class Player : MonoBehaviour
     {
         _uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
         _gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+
+        _currentTurbo = 0;
     }
 
     void Update()
     {
         Movement();
         PlayerDeath();
-        Teste();
+        TurnTurboOn();
     }
-
     public void Movement()
     {
         _horizontalInput = Input.GetAxis("Horizontal");
@@ -117,11 +113,19 @@ public class Player : MonoBehaviour
     public void SpeedLivesAdded()
     {
         canTurbo = true;
-        _currentTurbo = _maxTurbo;
+        _uiManager._turboBar.value = 30;
 
         if (_speedLives < 3)
         {
-            _speedLives++;
+            if (_currentTurbo == 0)
+            {
+                _currentTurbo = _uiManager._turboBar.maxValue;
+                _speedLives++;
+            }
+            else
+            {
+                _speedLives++;
+            }
         }
         _uiManager.UpdateTurbo(_speedLives);
     }
@@ -131,64 +135,36 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                _currentSpeed = _turboSpeed;
-            }
-            if (Input.GetKeyUp(KeyCode.LeftShift))
-            {
-                _currentSpeed = _defaultSpeed;
-                _speedLives--;
-                _uiManager.UpdateTurbo(_speedLives);
-            }
-            if (_speedLives < 1)
-            {
-                canTurbo = false;
-            }
-        }
-    }
-    public void Teste()
-    {
-        if (canTurbo == true)
-        {
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                turboON = true;
-                _timeHolding = 0.001f;
-                UseTurbo(_timeHolding);
-                _currentSpeed = _turboSpeed;
-            }
-            if (Input.GetKeyUp(KeyCode.LeftShift) && _currentTurbo - _timeHolding >= 0)
-            {
-                turboON = false;
-                _currentSpeed = _defaultSpeed;
-            }
-            if (Input.GetKeyUp(KeyCode.LeftShift) && _currentTurbo - _timeHolding <= 0)
-            {
-                if (_speedLives == 0)
+                _shiftHolding = Time.deltaTime * 10;
+                _currentTurbo -= _shiftHolding;
+
+                if (_currentTurbo > 0)
                 {
-                    turboON = false;
-                    _currentSpeed = _defaultSpeed;
-                    canTurbo = false;
+                    _currentSpeed = _turboSpeed;
                 }
                 else
                 {
-                    turboON = false;
                     _currentSpeed = _defaultSpeed;
-                    _speedLives--;
-                    _currentTurbo = _maxTurbo;
                 }
             }
-        }
-    }
-    public void UseTurbo(float amount)
-    {
-        if (_currentTurbo - amount >= 0)
-        {
-            _currentTurbo -= amount;
-        }
-        else
-        {
-            Debug.Log("ACABOU MENÓ!!!!");
-            _currentSpeed = _defaultSpeed;
+            if (Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                if (_currentTurbo > 0)
+                {
+                    _currentSpeed = _defaultSpeed;
+                }
+                else
+                {
+                    _speedLives--;
+                    _uiManager.UpdateTurbo(_speedLives);
+                    _currentSpeed = _defaultSpeed;
+                    _currentTurbo = _uiManager._turboBar.maxValue;
+                }
+                if (_speedLives == 0)
+                {
+                    canTurbo = false;
+                }
+            }
         }
     }
 }

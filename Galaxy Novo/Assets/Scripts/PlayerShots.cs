@@ -126,6 +126,7 @@ public class PlayerShots : MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.Space))
         {
+
             _timeOnReleased = Time.time - _timeOnPressed;
             if (_timeOnReleased >= 0.5f)
             {
