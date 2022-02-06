@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour
+public class BackUP_UI : MonoBehaviour
 {
     [SerializeField] private Text scoreTxt;
     [SerializeField] private Text _goldTxt;
@@ -19,8 +19,8 @@ public class UIManager : MonoBehaviour
     private float currentHeavyHold;
     private float _totalTimePressed;
 
-    private float _maxTurbo = 1.0f;
-    public float _currentTurbo;
+    private float _maxTurboAmount = 1.0f;
+    [SerializeField] public float _currentTurboAmount;
     public float _timeHolding;
 
     public bool teste;
@@ -52,6 +52,7 @@ public class UIManager : MonoBehaviour
     {
         GameOverImg();
         HeavyShotBarCharge();
+        TurboBarCharge();
     }
 
     public void UpdateLives(int currentLives)
@@ -99,21 +100,20 @@ public class UIManager : MonoBehaviour
     }
     public void TurboBarCharge()
     {
-        if(pl._speedLives == 0)
+        if (pl._speedLives == 0)
         {
             _turboBar.value = 0;
         }
-        if(pl._speedLives > 0)
+        if (pl._speedLives > 0)
         {
-            _turboBar.value = _maxTurbo;
-            _currentTurbo = _maxTurbo;
+            _turboBar.value = _maxTurboAmount;
+            _currentTurboAmount = _timeHolding;
 
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 _timeHolding += Time.deltaTime;
-                _turboBar.value = _maxTurbo - _timeHolding;
-                _currentTurbo = _turboBar.value;
-                Debug.Log(_currentTurbo);
+                Debug.Log(_currentTurboAmount);
+                _turboBar.value -= _currentTurboAmount;
             }
             if (Input.GetKeyUp(KeyCode.LeftShift))
             {

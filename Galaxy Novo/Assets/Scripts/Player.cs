@@ -11,12 +11,18 @@ public class Player : MonoBehaviour
 
     public int _lives;
 
-    public int _extraTurbo;
+    public int _speedLives;
     public bool canTurbo;
+    public bool turboON;
+
+    [SerializeField] private float _currentTurbo;
+    private float _maxTurbo = 1;
+    private float _timeHolding;
+
 
     private float _defaultSpeed = 5;
     [SerializeField] private float _currentSpeed;
-    private float _tuboSpeed = 7;
+    private float _turboSpeed = 7;
 
     public bool _shieldOn;
     [SerializeField] private float _shieldDuration;
@@ -38,7 +44,7 @@ public class Player : MonoBehaviour
     {
         Movement();
         PlayerDeath();
-        TurnTurboOn();
+        Teste();
     }
 
     public void Movement()
@@ -111,11 +117,13 @@ public class Player : MonoBehaviour
     public void SpeedLivesAdded()
     {
         canTurbo = true;
-        if (_extraTurbo < 3)
+        _currentTurbo = _maxTurbo;
+
+        if (_speedLives < 3)
         {
-            _extraTurbo++;
+            _speedLives++;
         }
-        _uiManager.UpdateTurbo(_extraTurbo);
+        _uiManager.UpdateTurbo(_speedLives);
     }
     public void TurnTurboOn()
     {
@@ -123,19 +131,64 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                _currentSpeed = _tuboSpeed;
+                _currentSpeed = _turboSpeed;
             }
             if (Input.GetKeyUp(KeyCode.LeftShift))
             {
                 _currentSpeed = _defaultSpeed;
-                _extraTurbo--;
-                _uiManager.UpdateTurbo(_extraTurbo);
+                _speedLives--;
+                _uiManager.UpdateTurbo(_speedLives);
             }
-            if (_extraTurbo < 1)
+            if (_speedLives < 1)
             {
                 canTurbo = false;
             }
         }
     }
-    
+    public void Teste()
+    {
+        if (canTurbo == true)
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                turboON = true;
+                _timeHolding = 0.001f;
+                UseTurbo(_timeHolding);
+                _currentSpeed = _turboSpeed;
+            }
+            if (Input.GetKeyUp(KeyCode.LeftShift) && _currentTurbo - _timeHolding >= 0)
+            {
+                turboON = false;
+                _currentSpeed = _defaultSpeed;
+            }
+            if (Input.GetKeyUp(KeyCode.LeftShift) && _currentTurbo - _timeHolding <= 0)
+            {
+                if (_speedLives == 0)
+                {
+                    turboON = false;
+                    _currentSpeed = _defaultSpeed;
+                    canTurbo = false;
+                }
+                else
+                {
+                    turboON = false;
+                    _currentSpeed = _defaultSpeed;
+                    _speedLives--;
+                    _currentTurbo = _maxTurbo;
+                }
+            }
+        }
+    }
+    public void UseTurbo(float amount)
+    {
+        if (_currentTurbo - amount >= 0)
+        {
+            _currentTurbo -= amount;
+        }
+        else
+        {
+            Debug.Log("ACABOU MENÓ!!!!");
+            _currentSpeed = _defaultSpeed;
+        }
+    }
 }
