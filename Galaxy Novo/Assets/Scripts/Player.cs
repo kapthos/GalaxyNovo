@@ -5,6 +5,8 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] private GameObject shields;
+    [SerializeField] private GameObject largeThrusters;
+    [SerializeField] private GameObject[] fireDamage;
 
     private float _horizontalInput;
     private float _verticalInput;
@@ -68,6 +70,16 @@ public class Player : MonoBehaviour
             transform.position = new Vector3(transform.position.x, -5.4f, 0);
         }
     }
+    public void PlayerHurt()
+    {
+        _lives--;
+        _uiManager.UpdateLives(_lives);
+
+        int randFire = Random.Range(0, 6);
+        float xRand = Random.Range(-0.2f, 0.2f);
+        float yRand = Random.Range(-1.15f, -0.3f);
+        fireDamage[randFire].SetActive(true);
+    }
     public void Damage()
     {
         if (_shieldOn == true)
@@ -77,8 +89,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        _lives--;
-        _uiManager.UpdateLives(_lives);
+        PlayerHurt();
     }
     public void ShieldOn()
     {
@@ -137,14 +148,16 @@ public class Player : MonoBehaviour
             {
                 _shiftHolding = Time.deltaTime * 10;
                 _currentTurbo -= _shiftHolding;
+                largeThrusters.SetActive(true);
 
                 if (_currentTurbo > 0)
                 {
-                    _currentSpeed = _turboSpeed;
+                    _currentSpeed = _turboSpeed;          
                 }
                 else
                 {
                     _currentSpeed = _defaultSpeed;
+                    largeThrusters.SetActive(false);
                 }
             }
             if (Input.GetKeyUp(KeyCode.LeftShift))
@@ -152,12 +165,14 @@ public class Player : MonoBehaviour
                 if (_currentTurbo > 0)
                 {
                     _currentSpeed = _defaultSpeed;
+                    largeThrusters.SetActive(false);
                 }
                 else
                 {
                     _speedLives--;
                     _uiManager.UpdateTurbo(_speedLives);
                     _currentSpeed = _defaultSpeed;
+                    largeThrusters.SetActive(false);
                     _currentTurbo = _uiManager._turboBar.maxValue;
                 }
                 if (_speedLives == 0)
@@ -167,4 +182,5 @@ public class Player : MonoBehaviour
             }
         }
     }
+
 }
