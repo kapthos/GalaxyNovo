@@ -7,13 +7,14 @@ public class Asteroid : MonoBehaviour
     [SerializeField] private float _speedRotation = 15.0f;
     [SerializeField] private float _lives;
     [SerializeField] private GameObject _explosion;
-    Animator _animExplosion;
+
+    //Animator _animExplosion;
     GameManager _gm;
     SpawnManager _sm;
 
     public void Start()
     {
-        _animExplosion = gameObject.GetComponent<Animator>();
+        //_animExplosion = gameObject.GetComponent<Animator>();
         _gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         _sm = GameObject.Find("SpawManager").GetComponent<SpawnManager>();
     }
