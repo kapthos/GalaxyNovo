@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
+    private float speed = 1.5f;
     Player _pl;
     
     void Start()
     {
         _pl = GameObject.Find("Player").GetComponent<Player>();
-        
     }
 
 
     void Update()
     {
-
+        transform.Translate(Vector3.down * speed * Time.deltaTime);
     }
 
     public void OnTriggerEnter2D(Collider2D other)

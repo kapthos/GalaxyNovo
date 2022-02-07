@@ -5,7 +5,6 @@ using UnityEngine;
 public class LaserBehavior : MonoBehaviour
 {
     private float _speed = 8.0f;
-
     void Update()
     {
         transform.Translate(Vector3.up * _speed * Time.deltaTime);

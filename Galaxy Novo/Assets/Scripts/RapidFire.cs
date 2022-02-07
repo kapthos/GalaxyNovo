@@ -5,7 +5,7 @@ using UnityEngine;
 public class RapidFire : MonoBehaviour
 {
     [SerializeField] private int _fireType; //0 = Double, 1 = Triple, 2 = Quad
-    [SerializeField] private float _speed = 3.5f;
+    [SerializeField] private float _speed = 3.2f;
 
     void Update()
     {
@@ -21,7 +21,6 @@ public class RapidFire : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-
     public void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Player")

@@ -31,7 +31,6 @@ public class SpawnManager : MonoBehaviour
         RapidShotSpawn();
         StopAllSpawns();
     }
-
     public void SpawnEnemy()
     {
         if (!_stopAllSpawns)
@@ -45,7 +44,6 @@ public class SpawnManager : MonoBehaviour
             }
         }
     }
-
     public void PowerUpSpawn()
     {
         if (!_stopAllSpawns)
@@ -60,7 +58,6 @@ public class SpawnManager : MonoBehaviour
         }
 
     }
-
     public void RapidShotSpawn()
     {
         if (!_stopAllSpawns)
@@ -75,7 +72,6 @@ public class SpawnManager : MonoBehaviour
         }
 
     }
-
     public void StopAllSpawns()
     {
         if (_gm._isGameOver == true)
@@ -84,5 +80,4 @@ public class SpawnManager : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-
 }

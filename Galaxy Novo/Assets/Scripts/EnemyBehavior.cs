@@ -39,7 +39,7 @@ public class EnemyBehavior : MonoBehaviour
             Player pl = other.GetComponent<Player>();
 
             pl.Damage();
-            _animExplosion.SetTrigger("OnEnemyDeath");
+            _lives = _lives - 3;
             Death();
         }
         else if (other.tag == "Laser")
@@ -68,8 +68,7 @@ public class EnemyBehavior : MonoBehaviour
             gameObject.GetComponent<BoxCollider2D>().isTrigger = false;
             DropGoldChance();
             _speed = 0;
-            _animExplosion.SetTrigger("OnEnemyDeath");         
-            Destroy(this.gameObject, 1.7f);
+            Destroy(this.gameObject);
         }
     }
     public void DropGoldChance()

@@ -31,12 +31,8 @@ public class PowerUps : MonoBehaviour
 
             if (_powerUpType == 0)
             {
-                ps.canHeavyShot = true;
-
-                if (ps != null)
-                {
-                    Destroy(this.gameObject);
-                }
+                ps.HeavyShotsAdded();
+                Destroy(this.gameObject);
             }
 
             else if (_powerUpType == 1)

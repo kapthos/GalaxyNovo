@@ -21,8 +21,7 @@ public class PlayerShots : MonoBehaviour
 
     private float _timeOnPressed;
     private float _timeOnReleased;
-    public bool _heavyShotON;
-    [SerializeField] private int _heavyShotsCount = 0;
+    public int _heavyShotsCount;
 
     // References
     [SerializeField] private GameObject _laser;
@@ -32,18 +31,22 @@ public class PlayerShots : MonoBehaviour
     public void Start()
     {
         _ui = GameObject.Find("UIManager").GetComponent<UIManager>();
+        canHeavyShot = false;
     }
 
     void Update()
     {
         StartCoroutine(SingleShot());
         StartCoroutine(MultiFire());
-        TimeHolding();
         HeavyShot();
     }
     public void SpawnShot()
     {
         Instantiate(_laser, transform.position, transform.rotation);
+    }
+    public void SpawnHeavy()
+    {
+        Instantiate(_heavy, transform.position + new Vector3(0.3f, 1, 0), Quaternion.identity);
     }
     IEnumerator SingleShot()
     {
@@ -58,6 +61,21 @@ public class PlayerShots : MonoBehaviour
                     _nextFire = Time.time + _singleShotCD;
                 }
             }
+        }
+    }
+    public void ShotType()
+    {
+        if (canDoubleShot == true)
+        {
+            numShotType = 2;
+        }
+        else if (canTripleShot == true)
+        {
+            numShotType = 3;
+        }
+        else if (canQuadShot == true)
+        {
+            numShotType = 4;
         }
     }
     public IEnumerator MultiFire()
@@ -75,7 +93,7 @@ public class PlayerShots : MonoBehaviour
                     _nextFire = Time.time + _multiShotCD;
                 }
             }
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(8);
             multiShotON = false;
             canDoubleShot = false;
             canTripleShot = false;
@@ -83,54 +101,40 @@ public class PlayerShots : MonoBehaviour
             canSingleShot = true;
         }
     }
+    public void HeavyShotsAdded()
+    {
+        canHeavyShot = true;
+        if (_heavyShotsCount < 3)
+        {
+            _heavyShotsCount++;
+            _ui.UpdateHeavyCount(_heavyShotsCount);
+        }
+    }
     public void HeavyShot()
     {
         if (canHeavyShot == true)
         {
-            canSingleShot = false;
-            TimeHolding();
-            if (_heavyShotON && _heavyShotsCount < 3)
+            if(_heavyShotsCount > 0)
             {
-                Instantiate(_heavy, transform.position + new Vector3(0.3f, 1, 0), Quaternion.identity);
-                _heavyShotsCount++;
-                _heavyShotON = false;
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    _timeOnPressed = Time.time;
+                }
+                if (Input.GetKeyUp(KeyCode.Space))
+                {
+                    _timeOnReleased = Time.time - _timeOnPressed;
+                    if (_timeOnReleased >= 0.5f)
+                    {
+                        SpawnHeavy();
+                        _heavyShotsCount--;
+                        _ui.UpdateHeavyCount(_heavyShotsCount);
+                        _ui.heavyShotBar.value = 0;
+                    }
+                }
             }
-            if (_heavyShotsCount > 2)
+            else
             {
                 canHeavyShot = false;
-                _heavyShotsCount = 0;
-                canSingleShot = true;
-            }
-        }
-    }
-    public void ShotType()
-    {
-        if(canDoubleShot == true)
-        {
-            numShotType = 2;
-        }
-        else if (canTripleShot == true)
-        {
-            numShotType = 3;
-        }
-        else if (canQuadShot == true)
-        {
-            numShotType = 4;
-        }
-    }
-    public void TimeHolding()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            _timeOnPressed = Time.time;
-        }
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-
-            _timeOnReleased = Time.time - _timeOnPressed;
-            if (_timeOnReleased >= 0.5f)
-            {
-                _heavyShotON = true;
             }
         }
     }

@@ -9,7 +9,6 @@ public class GameManager : MonoBehaviour
     private Player _pl;
     public bool _isGameOver = false;
 
-
     public void Start()
     {
         _pl = GameObject.Find("Player").GetComponent<Player>();
@@ -20,9 +19,7 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.LoadScene(0);
         }
-
     }
-
     public void GameOver()
     {
         _isGameOver = true;

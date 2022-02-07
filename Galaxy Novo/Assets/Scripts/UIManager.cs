@@ -8,12 +8,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text scoreTxt;
     [SerializeField] private Text _goldTxt;
     [SerializeField] private Text _turboTxt;
+    [SerializeField] private Text _heavyTxt;
     [SerializeField] Sprite[] _livesSprite;
     [SerializeField] Image _LivesImg;
     [SerializeField] Text _GameOverTxt;
     [SerializeField] Text _ContinueTxt;
-    [SerializeField] private Slider heavyShotBar;
-    [SerializeField] public Slider _turboBar;
+    public Slider heavyShotBar;
+    public Slider _turboBar;
 
     private float maxHeavyHold = 0.56f;
     private float currentHeavyHold;
@@ -37,7 +38,6 @@ public class UIManager : MonoBehaviour
         {
             Debug.Log("GameManager is NULL");
         }
-
         currentHeavyHold = 0;
         heavyShotBar.maxValue = maxHeavyHold;
         heavyShotBar.value = 0;
@@ -74,6 +74,10 @@ public class UIManager : MonoBehaviour
     {
         _turboTxt.text = "Turbo: " + pTurbo;
     }
+    public void UpdateHeavyCount(int hCount)
+    {
+        _heavyTxt.text = hCount.ToString();
+    }
     public void HeavyShotBarCharge()
     {
         if (ps.canHeavyShot == true)
@@ -88,14 +92,19 @@ public class UIManager : MonoBehaviour
 
             if (Input.GetKeyUp(KeyCode.Space))
             {
+                currentHeavyHold = 0;
                 heavyShotBar.value = currentHeavyHold;
                 _totalTimePressed = 0;
             }
         }
+        else
+        {
+            heavyShotBar.value = 0;
+        }
     }
     public void TurboBarCharge()
     {
-        if(pl.canTurbo == true)
+        if(pl.canTurbo == true && pl._speedLives > 0)
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
@@ -105,14 +114,16 @@ public class UIManager : MonoBehaviour
             }
             if (Input.GetKeyUp(KeyCode.LeftShift))
             {
-                if(_currentTurbo <= 0)
+                if (_currentTurbo <= 0)
                 {
                     _timeHolding = 0;
                     _turboBar.value = _turboBar.maxValue;
                 }
             }
         }
-        _timeHolding = 0;
-        _turboBar.value = 0;
+        else
+        {
+            _turboBar.value = 0;
+        }
     }
 }
