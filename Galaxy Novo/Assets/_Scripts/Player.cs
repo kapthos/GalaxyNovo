@@ -32,7 +32,6 @@ public class Player : MonoBehaviour
     public bool mustAddGold1;
     public bool mustAddGold2;
 
-
     //References
     private UIManager _uiManager;
     private GameManager _gm;
@@ -47,9 +46,7 @@ public class Player : MonoBehaviour
         mustAddGold0 = false;
         mustAddGold1 = false;
         mustAddGold2 = false;
-
     }
-
     void Update()
     {
         Movement();
@@ -156,7 +153,6 @@ public class Player : MonoBehaviour
                 mustAddGold1 = true;
             }
         }
-
         _uiManager.UpdateTurbo(_speedLives);
     }
     public void TurnTurboOn()
