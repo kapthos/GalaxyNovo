@@ -32,13 +32,11 @@ public class Player : MonoBehaviour
     //References
     private UIManager _uiManager;
     private GameManager _gm;
-    private Animator _anim;
 
     void Start()
     {
         _uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
         _gm = GameObject.Find("GameManager").GetComponent<GameManager>();
-        _anim = gameObject.GetComponent<Animator>();
 
         _currentTurbo = 0;
         mustAddGold = false;
@@ -54,17 +52,6 @@ public class Player : MonoBehaviour
     {
         _horizontalInput = Input.GetAxis("Horizontal");
         _verticalInput = Input.GetAxis("Vertical");
-
-        if (_horizontalInput <= 0)
-        {
-            _anim.SetBool("LeftTurn", true);
-            _anim.SetBool("RightTurn", false);
-        }
-        if (_horizontalInput >= 0)
-        {
-            _anim.SetBool("RightTurn", true);
-            _anim.SetBool("LeftTurn", false);
-        }
 
         transform.Translate(Vector3.right * _horizontalInput * _currentSpeed * Time.deltaTime);
         transform.Translate(Vector3.up * _verticalInput * _currentSpeed * Time.deltaTime);
