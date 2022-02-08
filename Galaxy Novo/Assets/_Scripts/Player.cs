@@ -28,6 +28,10 @@ public class Player : MonoBehaviour
     public int _score = 0;
 
     public bool mustAddGold;
+    public bool mustAddGold0;
+    public bool mustAddGold1;
+    public bool mustAddGold2;
+
 
     //References
     private UIManager _uiManager;
@@ -40,6 +44,10 @@ public class Player : MonoBehaviour
 
         _currentTurbo = 0;
         mustAddGold = false;
+        mustAddGold0 = false;
+        mustAddGold1 = false;
+        mustAddGold2 = false;
+
     }
 
     void Update()
@@ -97,7 +105,7 @@ public class Player : MonoBehaviour
     public void ShieldOn()
     {
         _shieldOn = true;
-        mustAddGold = true;
+        mustAddGold2 = true;
         shields.SetActive(true);
         StartCoroutine(ShieldPowerDownRoutine());
     }
@@ -106,7 +114,7 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(_shieldDuration);
         shields.SetActive(false);
         _shieldOn = false;
-        mustAddGold = false;
+        mustAddGold2 = false;
     }
     public void PlayerDeath()
     {
@@ -141,12 +149,14 @@ public class Player : MonoBehaviour
             else
             {
                 _speedLives++;
+
+            }
+            if (_speedLives >= 3)
+            {
+                mustAddGold1 = true;
             }
         }
-        else
-        {
-            mustAddGold = true;
-        }
+
         _uiManager.UpdateTurbo(_speedLives);
     }
     public void TurnTurboOn()
@@ -179,6 +189,7 @@ public class Player : MonoBehaviour
                 else
                 {
                     _speedLives--;
+                    mustAddGold1 = false;
                     _uiManager.UpdateTurbo(_speedLives);
                     _currentSpeed = _defaultSpeed;
                     largeThrusters.SetActive(false);

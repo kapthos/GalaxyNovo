@@ -22,6 +22,7 @@ public class PlayerShots : MonoBehaviour
     // References
     [SerializeField] private GameObject _laser;
     [SerializeField] private GameObject _heavy;
+    private AudioSource laserSound;
     private UIManager ui;
     private Player pl;
 
@@ -31,6 +32,7 @@ public class PlayerShots : MonoBehaviour
         pl = GameObject.Find("Player").GetComponent<Player>();
         canHeavyShot = false;
         numShotType = 1;
+        laserSound = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -42,22 +44,25 @@ public class PlayerShots : MonoBehaviour
     public void SpawnShot()
     {
         Instantiate(_laser, transform.position, transform.rotation);
+        laserSound.Play();
     }
     public void SpawnHeavy()
     {
         Instantiate(_heavy, transform.position + new Vector3(0.3f, 1, 0), Quaternion.identity);
+        laserSound.Play();
     }
     public void HeavyShotsAdded()
     {
         canHeavyShot = true;
+
         if (_heavyShotsCount < 3)
         {
             _heavyShotsCount++;
             ui.UpdateHeavyCount(_heavyShotsCount);
-        }
-        else
-        {
-            pl.mustAddGold = true;
+            if (_heavyShotsCount >= 3)
+            {
+                pl.mustAddGold0 = true;
+            }
         }
     }
     public void HeavyShot()

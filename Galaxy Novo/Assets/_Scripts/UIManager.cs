@@ -71,7 +71,7 @@ public class UIManager : MonoBehaviour
     }
     public void UpdateGold(int pGold)
     {
-        _goldTxt.text = "Gold: " + pGold;
+        _goldTxt.text = "Money: " + pGold;
     }
     public void UpdateTurbo(int pTurbo)
     {
