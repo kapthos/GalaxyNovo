@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] Text _ContinueTxt;
     public Slider heavyShotBar;
     public Slider _turboBar;
+    public Slider timeBar;
 
     private float maxHeavyHold = 0.56f;
     private float currentHeavyHold;
@@ -41,6 +42,7 @@ public class UIManager : MonoBehaviour
         currentHeavyHold = 0;
         heavyShotBar.maxValue = maxHeavyHold;
         heavyShotBar.value = 0;
+        timeBar.value = 0;
     }
 
     // Update is called once per frame
@@ -49,6 +51,7 @@ public class UIManager : MonoBehaviour
         GameOverImg();
         HeavyShotBarCharge();
         TurboBarCharge();
+        TimeBar();
     }
     public void UpdateLives(int currentLives)
     {
@@ -125,5 +128,9 @@ public class UIManager : MonoBehaviour
         {
             _turboBar.value = 0;
         }
+    }
+    void TimeBar()
+    {
+        timeBar.value += Time.deltaTime;
     }
 }
