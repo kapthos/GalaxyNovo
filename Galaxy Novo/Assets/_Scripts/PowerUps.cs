@@ -33,14 +33,20 @@ public class PowerUps : MonoBehaviour
             {
                 ps.HeavyShotsAdded();
                 Destroy(this.gameObject);
+                if (pl.mustAddGold == true)
+                {
+                    pl.AddGold(3);
+                    Destroy(this.gameObject);
+                }
             }
 
             else if (_powerUpType == 1)
             {
                 pl.SpeedLivesAdded();
-
-                if (pl != null)
+                Destroy(this.gameObject);
+                if (pl.mustAddGold == true)
                 {
+                    pl.AddGold(3);
                     Destroy(this.gameObject);
                 }
             }
@@ -48,9 +54,10 @@ public class PowerUps : MonoBehaviour
             else if (_powerUpType == 2)
             {
                 pl.ShieldOn();
-
-                if (pl != null)
+                Destroy(this.gameObject);
+                if (pl.mustAddGold == true)
                 {
+                    pl.AddGold(2);
                     Destroy(this.gameObject);
                 }
             }

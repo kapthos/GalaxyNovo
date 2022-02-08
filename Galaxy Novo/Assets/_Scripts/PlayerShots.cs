@@ -9,16 +9,12 @@ public class PlayerShots : MonoBehaviour
     [SerializeField] private float _singleShotCD;
     [SerializeField] private float _multiShotCD;
 
-    public bool canSingleShot = true;
-    public bool canHeavyShot = false;
-
-    public bool canDoubleShot;
-    public bool canTripleShot;
-    public bool canQuadShot;
-
     public bool multiShotON;
-    private int numShotType;
+    public int numShotType;
+    private float multiShotTimer;
+    [SerializeField] private float multiShotDuration = 4f;
 
+    public bool canHeavyShot = false;
     private float _timeOnPressed;
     private float _timeOnReleased;
     public int _heavyShotsCount;
@@ -26,19 +22,22 @@ public class PlayerShots : MonoBehaviour
     // References
     [SerializeField] private GameObject _laser;
     [SerializeField] private GameObject _heavy;
-    private UIManager _ui;
+    private UIManager ui;
+    private Player pl;
 
     public void Start()
     {
-        _ui = GameObject.Find("UIManager").GetComponent<UIManager>();
+        ui = GameObject.Find("UIManager").GetComponent<UIManager>();
+        pl = GameObject.Find("Player").GetComponent<Player>();
         canHeavyShot = false;
+        numShotType = 1;
     }
 
     void Update()
     {
-        StartCoroutine(SingleShot());
-        StartCoroutine(MultiFire());
         HeavyShot();
+        SingleShot();
+        StartCoroutine(MultiShot());
     }
     public void SpawnShot()
     {
@@ -48,73 +47,24 @@ public class PlayerShots : MonoBehaviour
     {
         Instantiate(_heavy, transform.position + new Vector3(0.3f, 1, 0), Quaternion.identity);
     }
-    IEnumerator SingleShot()
-    {
-        if (canSingleShot == true)
-        {
-            if (Input.GetButtonDown("Fire1") && Time.time >= _nextFire)
-            {
-                for (int i = 0; i < 1; i++)
-                {
-                    SpawnShot();
-                    yield return new WaitForSeconds(0.15f);
-                    _nextFire = Time.time + _singleShotCD;
-                }
-            }
-        }
-    }
-    public void ShotType()
-    {
-        if (canDoubleShot == true)
-        {
-            numShotType = 2;
-        }
-        else if (canTripleShot == true)
-        {
-            numShotType = 3;
-        }
-        else if (canQuadShot == true)
-        {
-            numShotType = 4;
-        }
-    }
-    public IEnumerator MultiFire()
-    {
-        if (multiShotON == true)
-        {
-            ShotType();
-            if (Input.GetButtonDown("Fire1") && Time.time >= _nextFire)
-            {
-                canSingleShot = false;
-                for (int i = 0; i < numShotType; i++)
-                {
-                    SpawnShot();
-                    yield return new WaitForSeconds(0.15f);
-                    _nextFire = Time.time + _multiShotCD;
-                }
-            }
-            yield return new WaitForSeconds(8);
-            multiShotON = false;
-            canDoubleShot = false;
-            canTripleShot = false;
-            canQuadShot = false;
-            canSingleShot = true;
-        }
-    }
     public void HeavyShotsAdded()
     {
         canHeavyShot = true;
         if (_heavyShotsCount < 3)
         {
             _heavyShotsCount++;
-            _ui.UpdateHeavyCount(_heavyShotsCount);
+            ui.UpdateHeavyCount(_heavyShotsCount);
+        }
+        else
+        {
+            pl.mustAddGold = true;
         }
     }
     public void HeavyShot()
     {
         if (canHeavyShot == true)
         {
-            if(_heavyShotsCount > 0)
+            if (_heavyShotsCount > 0)
             {
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
@@ -127,14 +77,50 @@ public class PlayerShots : MonoBehaviour
                     {
                         SpawnHeavy();
                         _heavyShotsCount--;
-                        _ui.UpdateHeavyCount(_heavyShotsCount);
-                        _ui.heavyShotBar.value = 0;
+                        ui.UpdateHeavyCount(_heavyShotsCount);
+                        ui.heavyShotBar.value = 0;
                     }
                 }
             }
             else
             {
                 canHeavyShot = false;
+            }
+        }
+    }
+    public void SingleShot()
+    {
+        if (numShotType == 1)
+        {
+            if (Input.GetButtonDown("Fire1") && Time.time >= _nextFire)
+            {
+                SpawnShot();
+                _nextFire = Time.time + _singleShotCD;
+            }
+        }
+    }
+    public IEnumerator MultiShot()
+    {
+        if (multiShotON == true)
+        {
+            multiShotTimer += Time.deltaTime;
+            pl.mustAddGold = true;
+
+            if (Input.GetButtonDown("Fire1") && Time.time >= _nextFire)
+            {
+                for (int i = 0; i < numShotType; i++)
+                {
+                    SpawnShot();
+                    yield return new WaitForSeconds(0.15f);
+                    _nextFire = Time.time + _multiShotCD;
+                }
+            }
+            if (multiShotTimer > multiShotDuration)
+            {
+                multiShotON = false;
+                numShotType = 1;
+                multiShotTimer = 0;
+                pl.mustAddGold = false;
             }
         }
     }

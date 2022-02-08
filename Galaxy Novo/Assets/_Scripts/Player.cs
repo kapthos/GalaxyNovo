@@ -27,16 +27,21 @@ public class Player : MonoBehaviour
     [SerializeField] private int _gold = 0;
     public int _score = 0;
 
+    public bool mustAddGold;
+
     //References
     private UIManager _uiManager;
     private GameManager _gm;
+    private Animator _anim;
 
     void Start()
     {
         _uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
         _gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+        _anim = gameObject.GetComponent<Animator>();
 
         _currentTurbo = 0;
+        mustAddGold = false;
     }
 
     void Update()
@@ -49,6 +54,17 @@ public class Player : MonoBehaviour
     {
         _horizontalInput = Input.GetAxis("Horizontal");
         _verticalInput = Input.GetAxis("Vertical");
+
+        if (_horizontalInput <= 0)
+        {
+            _anim.SetBool("LeftTurn", true);
+            _anim.SetBool("RightTurn", false);
+        }
+        if (_horizontalInput >= 0)
+        {
+            _anim.SetBool("RightTurn", true);
+            _anim.SetBool("LeftTurn", false);
+        }
 
         transform.Translate(Vector3.right * _horizontalInput * _currentSpeed * Time.deltaTime);
         transform.Translate(Vector3.up * _verticalInput * _currentSpeed * Time.deltaTime);
@@ -94,6 +110,7 @@ public class Player : MonoBehaviour
     public void ShieldOn()
     {
         _shieldOn = true;
+        mustAddGold = true;
         shields.SetActive(true);
         StartCoroutine(ShieldPowerDownRoutine());
     }
@@ -102,6 +119,7 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(_shieldDuration);
         shields.SetActive(false);
         _shieldOn = false;
+        mustAddGold = false;
     }
     public void PlayerDeath()
     {
@@ -137,6 +155,10 @@ public class Player : MonoBehaviour
             {
                 _speedLives++;
             }
+        }
+        else
+        {
+            mustAddGold = true;
         }
         _uiManager.UpdateTurbo(_speedLives);
     }
@@ -182,5 +204,4 @@ public class Player : MonoBehaviour
             }
         }
     }
-
 }

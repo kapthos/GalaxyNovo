@@ -25,22 +25,40 @@ public class RapidFire : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            PlayerShots pl = other.GetComponent<PlayerShots>();
-            pl.multiShotON = true;
+            PlayerShots ps = other.GetComponent<PlayerShots>();
+            Player pl = other.GetComponent<Player>();
 
             switch (_fireType)
             {
                 case 0:
-                    pl.canDoubleShot = true;
+                    ps.multiShotON = true;
+                    ps.numShotType = 2;
                     Destroy(this.gameObject);
+                    if (pl.mustAddGold == true)
+                    {
+                        pl.AddGold(3);
+                        Destroy(this.gameObject);
+                    }
                     break;
                 case 1:
-                    pl.canTripleShot = true;
+                    ps.multiShotON = true;
+                    ps.numShotType = 3;
                     Destroy(this.gameObject);
+                    if (pl.mustAddGold == true)
+                    {
+                        pl.AddGold(4);
+                        Destroy(this.gameObject);
+                    }
                     break;
                 case 2:
-                    pl.canQuadShot = true;
+                    ps.multiShotON = true;
+                    ps.numShotType = 4;
                     Destroy(this.gameObject);
+                    if (pl.mustAddGold == true)
+                    {
+                        pl.AddGold(5);
+                        Destroy(this.gameObject);
+                    }
                     break;
             }
         }
