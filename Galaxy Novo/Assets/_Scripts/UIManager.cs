@@ -13,6 +13,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] Image _LivesImg;
     [SerializeField] Text _GameOverTxt;
     [SerializeField] Text _ContinueTxt;
+
+    [SerializeField] Image _lojaImg;
+    [SerializeField] GameObject loja;
+
     public Slider heavyShotBar;
     public Slider _turboBar;
     public Slider timeBar;
@@ -20,6 +24,7 @@ public class UIManager : MonoBehaviour
     private float maxHeavyHold = 0.56f;
     private float currentHeavyHold;
     private float _totalTimePressed;
+    private bool lojaUp = false;
 
     public float _currentTurbo;
     public float _timeHolding;
@@ -35,10 +40,6 @@ public class UIManager : MonoBehaviour
         ps = GameObject.Find("Player").GetComponent<PlayerShots>();
         pl = GameObject.Find("Player").GetComponent<Player>();
 
-        if (gm == null)
-        {
-            Debug.Log("GameManager is NULL");
-        }
         currentHeavyHold = 0;
         heavyShotBar.maxValue = maxHeavyHold;
         heavyShotBar.value = 0;
@@ -129,8 +130,25 @@ public class UIManager : MonoBehaviour
             _turboBar.value = 0;
         }
     }
-    void TimeBar()
+
+    public void SpawnLoja()
+    {
+        if (gm.levelComplete == true)
+        {
+            if(lojaUp == false)
+            {
+                Instantiate(loja, new Vector3(0, 3, 0), Quaternion.identity);
+                lojaUp = true;
+            }
+        }
+    }
+    public void TimeBar()
     {
         timeBar.value += Time.deltaTime;
+    }
+
+    public void ActiveLojaUI()
+    {
+        _lojaImg.gameObject.SetActive(true);
     }
 }

@@ -8,6 +8,11 @@ TagManager:
   - Laser
   - TripleShot
   - HeavyShot
+  - ChangeDirection
+  - GoDown
+  - GoUp
+  - Nave
+  - Coin
   layers:
   - Default
   - TransparentFX

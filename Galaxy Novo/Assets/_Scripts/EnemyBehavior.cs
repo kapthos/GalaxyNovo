@@ -6,7 +6,12 @@ public class EnemyBehavior : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private int _lives;
-    public int points;
+    public bool stopReuse;
+
+    private bool reverseMovement;
+    private bool reversed;
+    private bool facingUp;
+
 
     Player pl;
     Animator _animExplosion;
@@ -17,23 +22,35 @@ public class EnemyBehavior : MonoBehaviour
     {
         pl = GameObject.Find("Player").GetComponent<Player>();
         _animExplosion = gameObject.GetComponent<Animator>();
-        explosionSound = GetComponent<AudioSource>();
+        explosionSound = gameObject.GetComponent<AudioSource>();
+        stopReuse = false;
+        
     }
 
     void Update()
     {
         Movement();
     }
+
     public void Movement()
     {
-        transform.Translate(Vector3.down * _speed * Time.deltaTime);
-
-        if (transform.position.y <= -6)
+        if (reverseMovement == true)
         {
-            float xRand = Random.Range(-8.4f, 8.4f);
-            transform.position = new Vector3(xRand, 7, 0);
+            CheckWhereToFace();
+            reversed = true;
+
+            transform.Translate(Vector3.up * _speed * Time.deltaTime);
+
+        }
+        else if (reverseMovement == false)
+        {
+            CheckWhereToFace();
+            reversed = false;
+
+            transform.Translate(Vector3.down * _speed * Time.deltaTime);
         }
     }
+
     public void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Player")
@@ -55,6 +72,14 @@ public class EnemyBehavior : MonoBehaviour
             _lives = _lives - 3;
             Destroy(other.gameObject);
             Death();
+        }
+        else if (other.tag == "GoDown")
+        {
+            reverseMovement = false;
+        }
+        else if (other.tag == "GoUp")
+        {
+            reverseMovement = true;
         }
     }
     public void Damage()
@@ -81,6 +106,26 @@ public class EnemyBehavior : MonoBehaviour
         if(chance > 7)
         {
             Instantiate(_coin, transform.position, Quaternion.identity);
+        }
+    }
+
+    public void DestroyRemaining()
+    {
+        Destroy(GameObject.FindGameObjectWithTag("Nave"));
+    }
+    public void CheckWhereToFace()
+    {
+        if(reversed == false)
+        {
+            facingUp = false;
+        }
+        else if(reversed == true)
+        {
+            facingUp = true;
+        }
+        if ((facingUp && transform.localScale.y > 0) || (!facingUp && transform.localScale.y < 0))
+        {
+            transform.localScale *= -1;
         }
     }
 }

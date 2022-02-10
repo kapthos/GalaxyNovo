@@ -6,6 +6,12 @@ public class RapidFire : MonoBehaviour
 {
     [SerializeField] private int _fireType; //0 = Double, 1 = Triple, 2 = Quad
     [SerializeField] private float _speed = 3.2f;
+    AudioSource multiShotSound;
+
+    private void Start()
+    {
+        multiShotSound = GetComponent<AudioSource>();
+    }
 
     void Update()
     {
@@ -33,31 +39,37 @@ public class RapidFire : MonoBehaviour
                 case 0:
                     ps.multiShotON = true;
                     ps.numShotType = 2;
-                    Destroy(this.gameObject);
+                    multiShotSound.Play();
+                    Destroy(this.gameObject, 0.2f);
                     if (pl.mustAddGold == true)
                     {
                         pl.AddGold(3);
-                        Destroy(this.gameObject);
+                        multiShotSound.Play();
+                        Destroy(this.gameObject, 0.2f);
                     }
                     break;
                 case 1:
                     ps.multiShotON = true;
                     ps.numShotType = 3;
-                    Destroy(this.gameObject);
+                    multiShotSound.Play();
+                    Destroy(this.gameObject, 0.2f);
                     if (pl.mustAddGold == true)
                     {
                         pl.AddGold(4);
-                        Destroy(this.gameObject);
+                        multiShotSound.Play();
+                        Destroy(this.gameObject, 0.2f);
                     }
                     break;
                 case 2:
                     ps.multiShotON = true;
                     ps.numShotType = 4;
-                    Destroy(this.gameObject);
+                    multiShotSound.Play();
+                    Destroy(this.gameObject, 0.2f);
                     if (pl.mustAddGold == true)
                     {
                         pl.AddGold(5);
-                        Destroy(this.gameObject);
+                        multiShotSound.Play();
+                        Destroy(this.gameObject, 0.2f);
                     }
                     break;
             }

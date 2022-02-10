@@ -4,45 +4,46 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    [SerializeField] private float _enemySpawnRate;
     [SerializeField] private float _powerUpSpawnRate;
     [SerializeField] private float _rapidSpawnRate;
 
     [SerializeField] private float _nextPowerUp;
-    [SerializeField] private float _nextEnemy;
     [SerializeField] private float _nextRapidShot;
 
     [SerializeField] private GameObject _enemyShip;
     [SerializeField] private GameObject[] _powerUps;
     [SerializeField] private GameObject[] _rapidShots;
+
+    private GameObject[] allships;
+
     public bool _stopAllSpawns = false;
 
     private GameManager _gm;
+    private EnemyBehavior _enemy;
 
     public void Start()
     {
         _gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+        _enemy = _enemyShip.GetComponent<EnemyBehavior>();
+        StartCoroutine(SpawnEnemy());
     }
 
     void Update()
     {
-        SpawnEnemy();
         PowerUpSpawn();
         RapidShotSpawn();
         StopAllSpawns();
+        CheckTimeOver();
+
     }
-    public void SpawnEnemy()
+    public IEnumerator SpawnEnemy()
     {
-        if (!_stopAllSpawns)
+        while (_stopAllSpawns == false)
         {
-            if (Time.time >= _nextEnemy)
-            {
-                GameObject newShip = Instantiate(_enemyShip);
-                float xRand = Random.Range(-10f, 10f);
-                newShip.transform.position = new Vector3(xRand, 7, 0);
-                _nextEnemy = Time.time + _enemySpawnRate;
-            }
-        }
+            float xRand = Random.Range(-10f, 10f);
+            GameObject newShip = Instantiate(_enemyShip, new Vector3(xRand, 7, 0), Quaternion.identity);
+            yield return new WaitForSeconds(3);
+        }   
     }
     public void PowerUpSpawn()
     {
@@ -78,6 +79,13 @@ public class SpawnManager : MonoBehaviour
         {
             _stopAllSpawns = true;
             Destroy(this.gameObject);
+        }
+    }
+    public void CheckTimeOver()
+    {
+        if(_gm.timeOver == true)
+        {
+            _stopAllSpawns = true;  
         }
     }
 }
