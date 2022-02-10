@@ -12,10 +12,9 @@ public class EnemyBehavior : MonoBehaviour
     private bool reversed;
     private bool facingUp;
 
-
     Player pl;
     Animator _animExplosion;
-    private AudioSource explosionSound;
+    AudioSource explosionSound;
     [SerializeField] GameObject _coin;
 
     void Start()
@@ -24,7 +23,7 @@ public class EnemyBehavior : MonoBehaviour
         _animExplosion = gameObject.GetComponent<Animator>();
         explosionSound = gameObject.GetComponent<AudioSource>();
         stopReuse = false;
-        
+
     }
 
     void Update()
@@ -94,6 +93,8 @@ public class EnemyBehavior : MonoBehaviour
             gameObject.GetComponent<BoxCollider2D>().enabled = false;
             gameObject.GetComponent<BoxCollider2D>().isTrigger = false;
             _animExplosion.SetTrigger("OnEnemyDeath");
+            transform.GetChild(0).gameObject.SetActive(false);
+            transform.GetChild(1).gameObject.SetActive(false);
             explosionSound.Play();
             DropGoldChance();
             _speed = 0;

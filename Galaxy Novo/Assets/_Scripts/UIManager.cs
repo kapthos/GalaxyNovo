@@ -142,7 +142,7 @@ public class UIManager : MonoBehaviour
         {
             if(lojaUp == false)
             {
-                Instantiate(loja, new Vector3(0, 3, 0), Quaternion.identity);
+                Instantiate(loja, new Vector3(0, 2.2f, 0), Quaternion.identity);
                 _interacaoTxt.gameObject.SetActive(true);
                 lojaUp = true;
             }

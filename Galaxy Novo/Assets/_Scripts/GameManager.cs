@@ -51,10 +51,8 @@ public class GameManager : MonoBehaviour
             _ui.SpawnLoja();
         }
     }
-
     public void BackToMenu()
     {
         SceneManager.LoadScene(0);
     }
-
 }
