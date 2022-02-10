@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
         _spm = GameObject.Find("SpawManager").GetComponent<SpawnManager>();
         timeOver = false;
         levelComplete = false;
-
 }
     void Update()
     {
@@ -52,4 +51,10 @@ public class GameManager : MonoBehaviour
             _ui.SpawnLoja();
         }
     }
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
 }

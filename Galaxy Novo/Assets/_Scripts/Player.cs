@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     private float _horizontalInput;
     private float _verticalInput;
 
+    public bool canMove = true;
+
     public int _lives;
 
     [SerializeField] private float _currentTurbo;
@@ -55,11 +57,14 @@ public class Player : MonoBehaviour
     }
     public void Movement()
     {
-        _horizontalInput = Input.GetAxis("Horizontal");
-        _verticalInput = Input.GetAxis("Vertical");
+        if (canMove == true)
+        {
+            _horizontalInput = Input.GetAxis("Horizontal");
+            _verticalInput = Input.GetAxis("Vertical");
 
-        transform.Translate(Vector3.right * _horizontalInput * _currentSpeed * Time.deltaTime);
-        transform.Translate(Vector3.up * _verticalInput * _currentSpeed * Time.deltaTime);
+            transform.Translate(Vector3.right * _horizontalInput * _currentSpeed * Time.deltaTime);
+            transform.Translate(Vector3.up * _verticalInput * _currentSpeed * Time.deltaTime);
+        }
 
         if (transform.position.x <= -10.2f)
         {

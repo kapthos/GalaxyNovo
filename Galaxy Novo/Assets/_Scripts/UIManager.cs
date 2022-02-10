@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] Image _LivesImg;
     [SerializeField] Text _GameOverTxt;
     [SerializeField] Text _ContinueTxt;
+    [SerializeField] Text _interacaoTxt;
 
     [SerializeField] Image _lojaImg;
     [SerializeField] GameObject loja;
@@ -20,6 +21,7 @@ public class UIManager : MonoBehaviour
     public Slider heavyShotBar;
     public Slider _turboBar;
     public Slider timeBar;
+    AudioSource aplausos;
 
     private float maxHeavyHold = 0.56f;
     private float currentHeavyHold;
@@ -33,7 +35,7 @@ public class UIManager : MonoBehaviour
     private GameManager gm;
     private PlayerShots ps;
     private Player pl;
-
+    
     void Start()
     {
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
@@ -44,9 +46,9 @@ public class UIManager : MonoBehaviour
         heavyShotBar.maxValue = maxHeavyHold;
         heavyShotBar.value = 0;
         timeBar.value = 0;
+        aplausos = GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         GameOverImg();
@@ -130,7 +132,10 @@ public class UIManager : MonoBehaviour
             _turboBar.value = 0;
         }
     }
-
+    public void TimeBar()
+    {
+        timeBar.value += Time.deltaTime;
+    }
     public void SpawnLoja()
     {
         if (gm.levelComplete == true)
@@ -138,17 +143,22 @@ public class UIManager : MonoBehaviour
             if(lojaUp == false)
             {
                 Instantiate(loja, new Vector3(0, 3, 0), Quaternion.identity);
+                _interacaoTxt.gameObject.SetActive(true);
                 lojaUp = true;
             }
         }
     }
-    public void TimeBar()
-    {
-        timeBar.value += Time.deltaTime;
-    }
-
     public void ActiveLojaUI()
     {
+        AudioSource audioManager = GameObject.FindWithTag("BackGroundSound").GetComponent<AudioSource>();
         _lojaImg.gameObject.SetActive(true);
+        _interacaoTxt.gameObject.SetActive(false);
+        pl.canMove = false;
+        ps.numShotType = 0;
+        if (audioManager.isPlaying)
+        {
+            audioManager.Pause();
+        }
+        aplausos.Play();
     }
 }
